@@ -27,6 +27,8 @@ import tools.RequestSender;
 import tools.SensorModuleName;
 
 public class BluetoothSensor extends AppCompatActivity implements SensorFunction {
+    private static final String TestApp = "TestApp";
+
     private BluetoothAdapter bluetoothAdapter;
     //    private List<BluetoothDevice> devicesFound = new ArrayList<>();
 //    private List<Double> distance = new ArrayList<>();//distance of nearby devices
@@ -44,8 +46,6 @@ public class BluetoothSensor extends AppCompatActivity implements SensorFunction
     private HashSet<String> macFilter = new HashSet<>();
     Data dataCache;
 
-    public BluetoothSensor() {
-    }
 
     public BluetoothSensor(BluetoothAdapter adapter, StateMachineRunnable stateMachine) {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -75,6 +75,7 @@ public class BluetoothSensor extends AppCompatActivity implements SensorFunction
                         try {
                             Thread.sleep(1);
                         } catch (Exception e) {
+
                         }
 
                         periodCnt++;
@@ -152,18 +153,18 @@ public class BluetoothSensor extends AppCompatActivity implements SensorFunction
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 if (macFilter.contains(device.getAddress())) {
                     int rssi = intent.getExtras().getShort(BluetoothDevice.EXTRA_RSSI);//获取额外rssi值
-                    deviceTmpMap.put(device.getAddress(), getDistance(rssi));
+                    String address = device.getAddress();
+                    deviceTmpMap.put(address, getDistance(rssi));
                 }
             }
-//            else if(action.equals(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)){
-//            }
+
         }
     };
 
     private void search() {
         if (enableDisplay)
             tx4.setText("search");
-        bluetoothAdapter.startDiscovery();
+        boolean started = bluetoothAdapter.startDiscovery();
     }
 
     private void updateDis() {
@@ -180,6 +181,7 @@ public class BluetoothSensor extends AppCompatActivity implements SensorFunction
 
         //send near devices change message to server
         ArrayList<String> macTmp = new ArrayList<>(nearDeviceMap.values());
+
         boolean change = false;
         if(macTmp.size()!=dataCache.a.size()){
             change=true;
@@ -195,18 +197,23 @@ public class BluetoothSensor extends AppCompatActivity implements SensorFunction
         if(change) {
             synchronized (dataCache.dataLock) {
                 dataCache.clear();
+                // conver bluetoothaddress to deviceId
+                for(int i=0;i<macTmp.size();i++){
+                    macTmp.set(i,convertToDeviceId(macTmp.get(i)));
+                }
                 dataCache.addData(macTmp);
-//                Log.d("----Bluetooth Transmit",SensorModuleName.BLUETOOTH+"-------");
+                Log.d("----Bluetooth Transmit",SensorModuleName.BLUETOOTH+"-------");
                 RequestSender.postDataWithParam(ClassToJson.convert(dataCache), SensorModuleName.BLUETOOTH);
                 dataCache.a.remove(dataCache.a.size()-1);
             }
         }
 
+        Log.d(TestApp, String.valueOf(nearDeviceMap.size()));
+
         if (nearDeviceMap.size() > 0) {// have near devices
             Map.Entry<Double, String> entry = nearDeviceMap.firstEntry();
             minDis = entry.getKey();
             String devMac = entry.getValue();
-
             if (minDis < GlobalVariables.Parameters.BLUE_REALLY_NEAR_THRESHOLD) {// have really near device
                 GlobalVariables.Variables.deviceCnt = nearDeviceMap.size();
                 if (GlobalVariables.Variables.reallyNear == 0) {// no really near before
@@ -256,16 +263,19 @@ public class BluetoothSensor extends AppCompatActivity implements SensorFunction
                         Thread.sleep(2000);//delay for camera to stop
                     } catch (Exception e) {
                     }
-
                 }
-                stateMachine.run();
             }
+            stateMachine.run();
         }
         if (enableDisplay) {
             distView[0].setText(String.format("%.2f", minDis));
         }
-
     }
+
+    public String convertToDeviceId(String bluetoothAddr){
+        return GlobalVariables.Parameters.blue2DeviceMap.get(bluetoothAddr);
+    }
+
 
     public double getDistance(int rssi) {
         int iRssi = Math.abs(rssi);
@@ -286,7 +296,7 @@ public class BluetoothSensor extends AppCompatActivity implements SensorFunction
             for (int i=0;i<macTmp.size();i++) {
                 this.addTimeStamp();
             }
-            a.add(GlobalVariables.Parameters.MY_BT_MAC_ID);
+            a.add(convertToDeviceId(GlobalVariables.Parameters.MY_BT_MAC_ID));
             this.addTimeStamp();
         }
 

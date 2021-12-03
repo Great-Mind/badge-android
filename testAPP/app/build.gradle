@@ -5,7 +5,7 @@ android {
     buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "com.example.testapp"
-        minSdkVersion 24
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -44,4 +44,20 @@ dependencies {
     //gson parsers
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'org.conscrypt:conscrypt-android:2.2.1'
+
+    //Bluetooth Beacons dependencies
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    // ...
+
+    // add this:
+    implementation 'com.estimote:proximity-sdk:1.0.4'
+    // for the latest version, see the CHANGELOG and replace "1.0.4"
+    // https://github.com/Estimote/Android-Proximity-SDK/blob/master/CHANGELOG.md
+
+    implementation 'com.estimote:mustard:0.2.1'
+
+    // for compatibility with Android 10, also add:
+    implementation 'com.estimote:scanning-plugin:0.25.4'
+
 }

@@ -165,7 +165,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="216dp"
         android:layout_marginTop="340dp"
-        android:text="startCam"
+        android:text="switch"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tx1" />
 
