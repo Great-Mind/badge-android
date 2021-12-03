@@ -11,7 +11,12 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.testapp.GlobalVariables;
+import com.example.testapp.LoginActivity;
+import com.google.gson.Gson;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,8 +24,18 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.TreeMap;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+
 import interfaces.SensorFunction;
 import interfaces.StateMachineRunnable;
+import tools.AndroidResponse;
 import tools.ClassToJson;
 import tools.DataCache;
 import tools.RequestSender;
@@ -266,6 +281,51 @@ public class BluetoothSensor extends AppCompatActivity implements SensorFunction
         }
 
     }
+
+    void nearDevicesToServer(HashMap<String, Double> deviceMap){
+        String macAddr = GlobalVariables.Parameters.MY_BT_MAC_ID;
+        Map<String, Object> map = new HashMap<>();
+        map.put("macAddr",macAddr);
+        map.put("devices",deviceMap);
+
+        OkHttpClient client = new OkHttpClient();
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        String json = ClassToJson.convert(map);
+        RequestBody body;
+        Request request;
+        body = RequestBody.create(json, JSON);
+        request = new Request.Builder().url(GlobalVariables.Parameters.LOGIN_URL).post(body).build();
+
+        // asynchronous request with callback.
+        client.newCall(request).enqueue((new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+//                showToast("Connection to");
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response ) throws IOException {
+                ResponseBody responseBody = response.body();
+                Gson gson=new Gson();
+                GlobalVariables.Variables.loginCode=response.code();
+//                Log.d("ResponseJSon",bodyJson);
+                String bodyJson = responseBody.string();
+                Log.e("================ResponseJSon",bodyJson);
+                if (GlobalVariables.Parameters.SERVER_LOGIN_JSON){
+                    AndroidResponse androidResponse = gson.fromJson(bodyJson,AndroidResponse.class);
+                    Log.i("================ResponseJSon", androidResponse.getSuccess());
+                    GlobalVariables.Variables.loginResponseBody = androidResponse.getSuccess();
+                }else{
+                    bodyJson = bodyJson.substring(16);
+                    String result = bodyJson.substring(0,bodyJson.lastIndexOf(')')).split("=")[1];
+                    Log.i("================ResponseJSon",result);
+                    GlobalVariables.Variables.loginResponseBody = result;
+                }
+                responseBody.close();
+            }
+        }));
+    }
+
 
     public double getDistance(int rssi) {
         int iRssi = Math.abs(rssi);

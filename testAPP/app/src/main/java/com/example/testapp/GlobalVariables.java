@@ -23,25 +23,28 @@ public class GlobalVariables {
         public static boolean isScanning = false;
         public static StateMachineRunnable stateMachine = null;
         public static int reallyNear = 0;// 0 no really near, 1 have really near, 2 really near changed
-        public static TextView deLog=null;
+        public static TextView deLog = null;
         public static int loginCode = 0;// code from login server response
         public static String loginResponseBody = "";
     }
 
     public static class Parameters {
         //badge basic info
-        public static final String badgeId = "device-0513-4";
-        public static String dataSetId = "Nokia3";
+        public static final String badgeId = "device-N1-14";
+        public static String dataSetId = "Nokia1";
 //        public static final String SERVER_URL = "https://6zowfrzywc.execute-api.us-west-2.amazonaws.com/dev/api/";
         // public static final String SERVER_URL="http://192.168.0.4:8080/badge/";
-        public static final String SERVER="http://34.238.246.224:8080";
+//        public static final String SERVER="http://34.238.246.224:8080";
+        // cornell server IP address
+        public static final String SERVER="http://10.49.7.165:8080";
         public static final String SERVER_URL=SERVER+"/dev/api";
         public static final String LOGIN_URL=SERVER+"/dev/login";
 
         // it needs to be customized for every machine
-        // public static final String MY_BT_MAC_ID="A8:3E:0E:B7:7C:34";
-        public static final String MY_BT_MAC_ID="A8:3E:0E:BB:60:51";
-
+        // N3-11
+//        public  static  final String MY_BT_MAC_ID="04:F1:28:07:07:0B";
+        // N1-14
+        public  static  final String MY_BT_MAC_ID="A8:3E:0E:B7:5C:F4";
         //global settings
         public static final boolean ALLOW_TRANSFER=true;
         public static final boolean START_BLUE=true;
@@ -57,7 +60,6 @@ public class GlobalVariables {
         public static final boolean LOGIN =true;
         public static final boolean SERVER_LOGIN=true;
         public static final boolean SERVER_LOGIN_JSON=true;
-
 
         public static final boolean START_PROXI=true;
 

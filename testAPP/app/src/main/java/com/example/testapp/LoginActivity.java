@@ -222,7 +222,6 @@ public class LoginActivity extends AppCompatActivity {
         }else{
             body = RequestBody.create(json, JSON);
             request = new Request.Builder().url(GlobalVariables.Parameters.LOGIN_URL).post(body).build();
-
         }
 
               //  String TAG = "logintest";

@@ -201,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
                     if(GlobalVariables.Variables.reallyNear >0){
                         // really near device detected
                         GlobalVariables.Variables.reallyNear = 1;
-                        stateChangeToScanning();
+//                        stateChangeToScanning();
                     }else if (GlobalVariables.Variables.deviceCnt > 0) {
                         //  near device discovered
                         stateChangeToRecording();
