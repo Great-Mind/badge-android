@@ -42,6 +42,8 @@ import tools.RequestSender;
 import tools.SensorModuleName;
 
 public class BluetoothSensor extends AppCompatActivity implements SensorFunction {
+    private static final String TestApp = "TestApp";
+
     private BluetoothAdapter bluetoothAdapter;
     //    private List<BluetoothDevice> devicesFound = new ArrayList<>();
 //    private List<Double> distance = new ArrayList<>();//distance of nearby devices
@@ -211,17 +213,18 @@ public class BluetoothSensor extends AppCompatActivity implements SensorFunction
             synchronized (dataCache.dataLock) {
                 dataCache.clear();
                 dataCache.addData(macTmp);
-//                Log.d("----Bluetooth Transmit",SensorModuleName.BLUETOOTH+"-------");
+                Log.d("----Bluetooth Transmit",SensorModuleName.BLUETOOTH+"-------");
                 RequestSender.postDataWithParam(ClassToJson.convert(dataCache), SensorModuleName.BLUETOOTH);
                 dataCache.a.remove(dataCache.a.size()-1);
             }
         }
 
+        Log.d(TestApp, String.valueOf(nearDeviceMap.size()));
+
         if (nearDeviceMap.size() > 0) {// have near devices
             Map.Entry<Double, String> entry = nearDeviceMap.firstEntry();
             minDis = entry.getKey();
             String devMac = entry.getValue();
-
             if (minDis < GlobalVariables.Parameters.BLUE_REALLY_NEAR_THRESHOLD) {// have really near device
                 GlobalVariables.Variables.deviceCnt = nearDeviceMap.size();
                 if (GlobalVariables.Variables.reallyNear == 0) {// no really near before
@@ -279,53 +282,7 @@ public class BluetoothSensor extends AppCompatActivity implements SensorFunction
         if (enableDisplay) {
             distView[0].setText(String.format("%.2f", minDis));
         }
-
     }
-
-    void nearDevicesToServer(HashMap<String, Double> deviceMap){
-        String macAddr = GlobalVariables.Parameters.MY_BT_MAC_ID;
-        Map<String, Object> map = new HashMap<>();
-        map.put("macAddr",macAddr);
-        map.put("devices",deviceMap);
-
-        OkHttpClient client = new OkHttpClient();
-        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-        String json = ClassToJson.convert(map);
-        RequestBody body;
-        Request request;
-        body = RequestBody.create(json, JSON);
-        request = new Request.Builder().url(GlobalVariables.Parameters.LOGIN_URL).post(body).build();
-
-        // asynchronous request with callback.
-        client.newCall(request).enqueue((new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-//                showToast("Connection to");
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response ) throws IOException {
-                ResponseBody responseBody = response.body();
-                Gson gson=new Gson();
-                GlobalVariables.Variables.loginCode=response.code();
-//                Log.d("ResponseJSon",bodyJson);
-                String bodyJson = responseBody.string();
-                Log.e("================ResponseJSon",bodyJson);
-                if (GlobalVariables.Parameters.SERVER_LOGIN_JSON){
-                    AndroidResponse androidResponse = gson.fromJson(bodyJson,AndroidResponse.class);
-                    Log.i("================ResponseJSon", androidResponse.getSuccess());
-                    GlobalVariables.Variables.loginResponseBody = androidResponse.getSuccess();
-                }else{
-                    bodyJson = bodyJson.substring(16);
-                    String result = bodyJson.substring(0,bodyJson.lastIndexOf(')')).split("=")[1];
-                    Log.i("================ResponseJSon",result);
-                    GlobalVariables.Variables.loginResponseBody = result;
-                }
-                responseBody.close();
-            }
-        }));
-    }
-
 
     public double getDistance(int rssi) {
         int iRssi = Math.abs(rssi);

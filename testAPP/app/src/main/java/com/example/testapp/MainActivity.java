@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
@@ -198,23 +199,28 @@ public class MainActivity extends AppCompatActivity {
         synchronized (stateMachineLock) {
             switch (state) {
                 case IDLE:
-                    if(GlobalVariables.Variables.reallyNear >0){
+                    if(GlobalVariables.Variables.reallyNear > 0){
                         // really near device detected
                         GlobalVariables.Variables.reallyNear = 1;
-//                        stateChangeToScanning();
+                        Log.i("====","Badge detected!");
+                        showToast("badge detected!!");
+                       // stateChangeToScanning();
                     }else if (GlobalVariables.Variables.deviceCnt > 0) {
                         //  near device discovered
-                        stateChangeToRecording();
                     }
+                    stateChangeToRecording();
                     break;
                 case RECORDING:
                     if (GlobalVariables.Variables.reallyNear == 2) {
                         // really near device changed
                         GlobalVariables.Variables.reallyNear = 1;
-                        stateChangeToScanning();
+                        Log.i("====","Badge detected!");
+                        showToast("badge detected!!");
+                        // stateChangeToScanning();
                     }
                     if (GlobalVariables.Variables.deviceCnt <= 0) {
                         // no near device detected, detach
+                        showToast("no near badge detected");
                         stateChangeToIdle();
                     }
                     break;
@@ -233,6 +239,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }else{
                         GlobalVariables.Variables.reallyNear = 1;
+                        stateChangeToRecording();
                     }
                     break;
                 default:
@@ -310,9 +317,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void showToast(String Str) {
-        Toast.makeText(this, Str, Toast.LENGTH_SHORT).show();
+    private void showToast(String str){
+        Context thisContext = this;
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(thisContext, str, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
+
+
 
 

@@ -102,6 +102,7 @@ public class LoginActivity extends AppCompatActivity {
                                     } catch (Exception e) {
                                     }
                                     timing++;
+                                    Log.i("current timing", timing +"");
                                     if (GlobalVariables.Variables.loginCode != 0) {
                                         //login success
                                         if(GlobalVariables.Variables.loginCode==200){
@@ -223,7 +224,6 @@ public class LoginActivity extends AppCompatActivity {
             body = RequestBody.create(json, JSON);
             request = new Request.Builder().url(GlobalVariables.Parameters.LOGIN_URL).post(body).build();
         }
-
               //  String TAG = "logintest";
         // asynchronous request with callback.
         client.newCall(request).enqueue((new Callback() {
@@ -237,6 +237,7 @@ public class LoginActivity extends AppCompatActivity {
                 ResponseBody responseBody = response.body();
                 Gson gson=new Gson();
                 GlobalVariables.Variables.loginCode=response.code();
+                Log.i("=====login code:",GlobalVariables.Variables.loginCode+"");
 //                Log.d("ResponseJSon",bodyJson);
                 String bodyJson = responseBody.string();
                 Log.e("================ResponseJSon",bodyJson);
