@@ -32,19 +32,19 @@ public class GlobalVariables {
 
     public static class Parameters {
         //badge basic info
-        public static final String badgeId = "device-N4-05";
-        public static String dataSetId = "Nokia4";
+        public static final String badgeId = "device-N4-01";
+        public static String dataSetId = "Nokia3";
 //        public static final String SERVER_URL = "https://6zowfrzywc.execute-api.us-west-2.amazonaws.com/dev/api/";
         // public static final String SERVER_URL="http://192.168.0.4:8080/badge/";
 //        public static final String SERVER="http://34.238.246.224:8080";
         // cornell server IP address
-        public static final String SERVER="http://10.49.8.164:8080";
+        public static final String SERVER="http://128.253.128.12:8080";
         public static final String SERVER_URL=SERVER+"/dev/api";
         public static final String LOGIN_URL=SERVER+"/dev/login";
 
         // it needs to be customized for every machine
         // N3-11
-      //   public  static  final String MY_BT_MAC_ID="04:F1:28:07:07:0B";
+//         public  static  final String MY_BT_MAC_ID="04:F1:28:07:07:0B";
         // N1-12
 //        public  static  final String MY_BT_MAC_ID="A8:3E:0E:B7:5B:AC";
         // N1-13
@@ -55,15 +55,15 @@ public class GlobalVariables {
 //      public static final String MY_BT_MAC_ID="A8:3E:0E:B7:59:AA";
 
         // N4-01
-//      public  static  final String MY_BT_MAC_ID="74:8A:28:80:EE:6C";
+        public  static  final String MY_BT_MAC_ID="74:8A:28:80:EE:6C";
         //  N4-02
-  //      public  static  final String MY_BT_MAC_ID="74:8A:28:80:ED:2E";
+//        public  static  final String MY_BT_MAC_ID="74:8A:28:80:ED:2E";
         // N4-03
 //        public static final String MY_BT_MAC_ID="74:8A:28:80:ED:BD";
         // N4-04
 //        public static final String MY_BT_MAC_ID="74:8A:28:80:EB:50";
         // N4-05
-        public static final String MY_BT_MAC_ID="74:8A:28:80:EB:70";
+//        public static final String MY_BT_MAC_ID="74:8A:28:80:EB:70";
         // N4-06
 //        public static final String MY_BT_MAC_ID="74:8A:28:80:EE:AE";
         //global settings
@@ -104,7 +104,7 @@ public class GlobalVariables {
                 "74:8A:28:80:F2:4E"};
 
         // Bluetooth Mac map key->bluetooth mac address; value->wifi mac address
-        public static HashMap<String,String> blueToothMap = new HashMap<String,String>(){
+        public static HashMap<String,String> blue2MacMap = new HashMap<String,String>(){
             {
                 put("A8:3E:0E:B7:7A:EC","A8:3E:0E:B7:5B:AC");//N1-12
                 put("A8:3E:0E:BB:60:51","A8:3E:0E:BB:41:11");//N1-13
@@ -117,6 +117,22 @@ public class GlobalVariables {
                 put("74:8A:28:80:F0:F0","74:8A:28:80:EB:50");//N4-04
                 put("74:8A:28:80:F1:10","74:8A:28:80:EB:70");//N4-05
                 put("74:8A:28:80:F2:4E","74:8A:28:80:EE:AE");//N4-06
+            }
+        };
+        // Bluetooth Mac map key->bluetooth mac address; value->wifi mac address
+        public static HashMap<String,String> blue2DeviceMap = new HashMap<String,String>(){
+            {
+                put("A8:3E:0E:B7:7A:EC","N1-12");//N1-12
+                put("A8:3E:0E:BB:60:51","N1-13");//N1-13
+                put("A8:3E:0E:B7:5C:F4","N1-14");//N1-14
+                put("A8:3E:0E:B7:78:EA","N1-15");//N1-15
+                put("04:F1:28:08:7C:A7","N3-11");//N3-11
+                put("74:8A:28:80:F4:0C","N4-01");//N4-01
+                put("74:8A:28:80:F2:CE","N4-02");//N4-02
+                put("74:8A:28:80:F3:5D","N4-03");//N4-03
+                put("74:8A:28:80:F0:F0","N4-04");//N4-04
+                put("74:8A:28:80:F1:10","N4-05");//N4-05
+                put("74:8A:28:80:F2:4E","N4-06");//N4-06
             }
         };
 

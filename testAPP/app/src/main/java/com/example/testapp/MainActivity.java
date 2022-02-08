@@ -204,11 +204,11 @@ public class MainActivity extends AppCompatActivity {
                         GlobalVariables.Variables.reallyNear = 1;
                         Log.i("====","Badge detected!");
                         showToast("badge detected!!");
-                       // stateChangeToScanning();
+                        stateChangeToScanning();
                     }else if (GlobalVariables.Variables.deviceCnt > 0) {
                         //  near device discovered
+                        stateChangeToRecording();
                     }
-                    stateChangeToRecording();
                     break;
                 case RECORDING:
                     if (GlobalVariables.Variables.reallyNear == 2) {
@@ -216,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
                         GlobalVariables.Variables.reallyNear = 1;
                         Log.i("====","Badge detected!");
                         showToast("badge detected!!");
-                        // stateChangeToScanning();
+                         stateChangeToScanning();
                     }
                     if (GlobalVariables.Variables.deviceCnt <= 0) {
                         // no near device detected, detach

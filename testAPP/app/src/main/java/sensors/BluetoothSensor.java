@@ -197,6 +197,7 @@ public class BluetoothSensor extends AppCompatActivity implements SensorFunction
 
         //send near devices change message to server
         ArrayList<String> macTmp = new ArrayList<>(nearDeviceMap.values());
+
         boolean change = false;
         if(macTmp.size()!=dataCache.a.size()){
             change=true;
@@ -212,6 +213,10 @@ public class BluetoothSensor extends AppCompatActivity implements SensorFunction
         if(change) {
             synchronized (dataCache.dataLock) {
                 dataCache.clear();
+                // conver bluetoothaddress to deviceId
+                for(int i=0;i<macTmp.size();i++){
+                    macTmp.set(i,convertToDeviceId(macTmp.get(i)));
+                }
                 dataCache.addData(macTmp);
                 Log.d("----Bluetooth Transmit",SensorModuleName.BLUETOOTH+"-------");
                 RequestSender.postDataWithParam(ClassToJson.convert(dataCache), SensorModuleName.BLUETOOTH);
@@ -282,6 +287,10 @@ public class BluetoothSensor extends AppCompatActivity implements SensorFunction
         if (enableDisplay) {
             distView[0].setText(String.format("%.2f", minDis));
         }
+    }
+
+    public String convertToDeviceId(String bluetoothAddr){
+        return GlobalVariables.Parameters.blue2DeviceMap.get(bluetoothAddr);
     }
 
     public double getDistance(int rssi) {
