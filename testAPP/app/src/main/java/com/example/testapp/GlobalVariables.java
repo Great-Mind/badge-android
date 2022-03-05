@@ -32,8 +32,8 @@ public class GlobalVariables {
 
     public static class Parameters {
         //badge basic info
-        public static final String badgeId = "device-N4-01";
-        public static String dataSetId = "Nokia3";
+        public static final String badgeId = "device-N4-06";
+        public static String dataSetId = "Nokia4";
 //        public static final String SERVER_URL = "https://6zowfrzywc.execute-api.us-west-2.amazonaws.com/dev/api/";
         // public static final String SERVER_URL="http://192.168.0.4:8080/badge/";
 //        public static final String SERVER="http://34.238.246.224:8080";
@@ -55,9 +55,9 @@ public class GlobalVariables {
 //      public static final String MY_BT_MAC_ID="A8:3E:0E:B7:59:AA";
 
         // N4-01
-        public  static  final String MY_BT_MAC_ID="74:8A:28:80:EE:6C";
+      //  public  static  final String MY_BT_MAC_ID="74:8A:28:80:EE:6C";
         //  N4-02
-//        public  static  final String MY_BT_MAC_ID="74:8A:28:80:ED:2E";
+      //  public  static  final String MY_BT_MAC_ID="74:8A:28:80:ED:2E";
         // N4-03
 //        public static final String MY_BT_MAC_ID="74:8A:28:80:ED:BD";
         // N4-04
@@ -65,7 +65,7 @@ public class GlobalVariables {
         // N4-05
 //        public static final String MY_BT_MAC_ID="74:8A:28:80:EB:70";
         // N4-06
-//        public static final String MY_BT_MAC_ID="74:8A:28:80:EE:AE";
+        public static final String MY_BT_MAC_ID="74:8A:28:80:EE:AE";
         //global settings
         public static final boolean ALLOW_TRANSFER=true;
         public static final boolean START_BLUE=true;
@@ -86,7 +86,7 @@ public class GlobalVariables {
 
 
         //Bluetooth
-        public static final long BLUE_SAMPLE_PERIOD = 3000;// bluetoothe scan period (ms)
+        public static final long BLUE_SAMPLE_PERIOD = 3000;// bluetooth scan period (ms)
         public static final long BLUE_SCAN_TIME_LIMIT = 5;//scan times for one output
         public static final double BLUE_NEAR_THRESHOLD = 10.0;//threshold for near device (meter)
         public static final double BLUE_REALLY_NEAR_THRESHOLD = 2;//threshold for really near device (meter)

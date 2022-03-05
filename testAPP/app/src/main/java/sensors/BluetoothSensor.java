@@ -268,6 +268,7 @@ public class BluetoothSensor extends AppCompatActivity implements SensorFunction
                     }
                 }
             }
+            stateMachine.run();
         }else{// no Near Device
             if(GlobalVariables.Variables.deviceCnt!=0){
                 GlobalVariables.Variables.deviceCnt=0;
@@ -279,10 +280,9 @@ public class BluetoothSensor extends AppCompatActivity implements SensorFunction
                         Thread.sleep(2000);//delay for camera to stop
                     } catch (Exception e) {
                     }
-
                 }
-                stateMachine.run();
             }
+            stateMachine.run();
         }
         if (enableDisplay) {
             distView[0].setText(String.format("%.2f", minDis));

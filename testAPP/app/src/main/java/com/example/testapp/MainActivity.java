@@ -204,10 +204,12 @@ public class MainActivity extends AppCompatActivity {
                         GlobalVariables.Variables.reallyNear = 1;
                         Log.i("====","Badge detected!");
                         showToast("badge detected!!");
-                        stateChangeToScanning();
+                        stateChangeToRecording();
                     }else if (GlobalVariables.Variables.deviceCnt > 0) {
                         //  near device discovered
                         stateChangeToRecording();
+                    }else{
+                        stateChangeToIdle();
                     }
                     break;
                 case RECORDING:
@@ -216,32 +218,34 @@ public class MainActivity extends AppCompatActivity {
                         GlobalVariables.Variables.reallyNear = 1;
                         Log.i("====","Badge detected!");
                         showToast("badge detected!!");
-                         stateChangeToScanning();
+                        stateChangeToRecording();
                     }
                     if (GlobalVariables.Variables.deviceCnt <= 0) {
                         // no near device detected, detach
                         showToast("no near badge detected");
                         stateChangeToIdle();
-                    }
-                    break;
-                case SCANNING:
-                    if (GlobalVariables.Variables.haveQR) {
-                        //  QR code discovered
-                        GlobalVariables.Variables.haveQR = false;
-                        sendQRCode();
-                        stateChangeToRecording();
-                    } else if (GlobalVariables.Variables.reallyNear == 0) {
-                        // no really near device detected
-                        if(GlobalVariables.Variables.deviceCnt>0) {
-                            stateChangeToRecording();
-                        }else{
-                            stateChangeToIdle();
-                        }
                     }else{
-                        GlobalVariables.Variables.reallyNear = 1;
-                        stateChangeToRecording();
+                        stateChangeToIdle();
                     }
                     break;
+//                case SCANNING:
+//                    if (GlobalVariables.Variables.haveQR) {
+//                        //  QR code discovered
+//                        GlobalVariables.Variables.haveQR = false;
+//                        sendQRCode();
+//                        stateChangeToRecording();
+//                    } else if (GlobalVariables.Variables.reallyNear == 0) {
+//                        // no really near device detected
+//                        if(GlobalVariables.Variables.deviceCnt>0) {
+//                            stateChangeToRecording();
+//                        }else{
+//                            stateChangeToIdle();
+//                        }
+//                    }else{
+//                        GlobalVariables.Variables.reallyNear = 1;
+//                        stateChangeToRecording();
+//                    }
+//                    break;
                 default:
                     stateChangeToIdle();
                     break;
@@ -253,16 +257,16 @@ public class MainActivity extends AppCompatActivity {
         RequestSender.postDataWithParam(GlobalVariables.Variables.qrCode, SensorModuleName.QRCODE);
     }
 
-    private void stateChangeToScanning() {
-        state = SCANNING;
-        statemachineTx.setText("Scanning");
-
-        if(GlobalVariables.Parameters.START_MIC) {
-            microphoneSensor.startSensor();
-        }
-        //start camera
-        startScanning();
-    }
+//    private void stateChangeToScanning() {
+//        state = SCANNING;
+//        statemachineTx.setText("Scanning");
+//
+//        if(GlobalVariables.Parameters.START_MIC) {
+//            microphoneSensor.startSensor();
+//        }
+//        //start camera
+//        startScanning();
+//    }
 
     private void stateChangeToRecording() {
         //Start microphone
