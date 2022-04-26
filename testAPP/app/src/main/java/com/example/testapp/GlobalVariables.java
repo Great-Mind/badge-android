@@ -36,7 +36,7 @@ public class GlobalVariables {
         public static String dataSetId = "Nokia4";
 //        public static final String SERVER_URL = "https://6zowfrzywc.execute-api.us-west-2.amazonaws.com/dev/api/";
         // public static final String SERVER_URL="http://192.168.0.4:8080/badge/";
-//        public static final String SERVER="http://34.238.246.224:8080";
+//        public static final String SERVER="http://10.49.64.21:8080";
         // cornell server IP address
         public static final String SERVER="http://128.253.128.12:8080";
         public static final String SERVER_URL=SERVER+"/dev/api";
@@ -46,26 +46,26 @@ public class GlobalVariables {
         // N3-11
 //         public  static  final String MY_BT_MAC_ID="04:F1:28:07:07:0B";
         // N1-12
-//        public  static  final String MY_BT_MAC_ID="A8:3E:0E:B7:5B:AC";
+//        public  static  final String MY_BT_MAC_ID="A8:3E:0E:B7:7A:EC";
         // N1-13
-//        public  static  final String MY_BT_MAC_ID="A8:3E:0E:BB:41:11";
+//        public  static  final String MY_BT_MAC_ID="A8:3E:0E:BB:60:51";
         // N1-14
-       // public  static  final String MY_BT_MAC_ID="A8:3E:0E:B7:5C:F4";
+//        public  static  final String MY_BT_MAC_ID="A8:3E:0E:B7:5C:F4";
         //N1-15
-//      public static final String MY_BT_MAC_ID="A8:3E:0E:B7:59:AA";
+//      public static final String MY_BT_MAC_ID="A8:3E:0E:B7:78:EA";
 
         // N4-01
-      //  public  static  final String MY_BT_MAC_ID="74:8A:28:80:EE:6C";
+//        public  static  final String MY_BT_MAC_ID="74:8A:28:80:F4:0C";
         //  N4-02
-      //  public  static  final String MY_BT_MAC_ID="74:8A:28:80:ED:2E";
+//        public  static  final String MY_BT_MAC_ID="74:8A:28:80:F2:CE";
         // N4-03
-//        public static final String MY_BT_MAC_ID="74:8A:28:80:ED:BD";
+//        public static final String MY_BT_MAC_ID="74:8A:28:80:F3:5D";
         // N4-04
-//        public static final String MY_BT_MAC_ID="74:8A:28:80:EB:50";
+//        public static final String MY_BT_MAC_ID="74:8A:28:80:F0:F0";
         // N4-05
-//        public static final String MY_BT_MAC_ID="74:8A:28:80:EB:70";
+//        public static final String MY_BT_MAC_ID="74:8A:28:80:F1:10";
         // N4-06
-        public static final String MY_BT_MAC_ID="74:8A:28:80:EE:AE";
+        public static final String MY_BT_MAC_ID="74:8A:28:80:F2:4E";
         //global settings
         public static final boolean ALLOW_TRANSFER=true;
         public static final boolean START_BLUE=true;
@@ -88,8 +88,8 @@ public class GlobalVariables {
         //Bluetooth
         public static final long BLUE_SAMPLE_PERIOD = 3000;// bluetooth scan period (ms)
         public static final long BLUE_SCAN_TIME_LIMIT = 5;//scan times for one output
-        public static final double BLUE_NEAR_THRESHOLD = 10.0;//threshold for near device (meter)
-        public static final double BLUE_REALLY_NEAR_THRESHOLD = 2;//threshold for really near device (meter)
+        public static final double BLUE_NEAR_THRESHOLD = 5;//threshold for near device (meter)
+        public static final double BLUE_REALLY_NEAR_THRESHOLD = 5;//threshold for really near device (meter)
         public static String[] blueToothMacs = new String[]{
                 "2C:41:A1:F5:B9:F6","5A:BF:46:B0:A9:CE",
                 "A8:3E:0E:B7:74:F6","A8:3E:0E:B7:7C:34",

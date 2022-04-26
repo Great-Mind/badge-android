@@ -21,12 +21,26 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.estimote.mustard.rx_goodness.rx_requirements_wizard.Requirement;
+import com.estimote.mustard.rx_goodness.rx_requirements_wizard.RequirementsWizardFactory;
+import com.estimote.proximity_sdk.api.EstimoteCloudCredentials;
+import com.estimote.proximity_sdk.api.ProximityObserver;
+import com.estimote.proximity_sdk.api.ProximityObserverBuilder;
+import com.estimote.proximity_sdk.api.ProximityZone;
+import com.estimote.proximity_sdk.api.ProximityZoneBuilder;
+import com.estimote.proximity_sdk.api.ProximityZoneContext;
 import com.example.testapp.recorder.VoiceRecorder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.zxing.qrcode.encoder.QRCode;
 import com.konovalov.vad.VadConfig;
 
+import java.util.*;
+
+
 import interfaces.StateMachineRunnable;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
+import kotlin.jvm.functions.Function1;
 import sensors.AccelerometerSensor;
 import sensors.BluetoothSensor;
 import sensors.MicrophoneSensor;
@@ -52,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
     final int SCANNING = (2);
     int state;
 
+    // a property to hold the Proximity Observer for Bluetooth beacons
+    private ProximityObserver proximityObserver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,12 +75,63 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);//force portrait
 
-
         statemachineTx = findViewById(R.id.smTx);
         GlobalVariables.Variables.deLog=findViewById(R.id.debug);
 
         // all initialized
         sensorInit();
+
+        // Credentials for bluetooth beacons https://cloud.estimote.com/#/apps
+        EstimoteCloudCredentials cloudCredentials =
+                new EstimoteCloudCredentials("badge-app-iwx", "95c20c35592ec62f863a2f3634d831f3");
+
+        this.proximityObserver =
+                new ProximityObserverBuilder(getApplicationContext(), cloudCredentials)
+                        .onError(new Function1<Throwable, Unit>() {
+                            @Override
+                            public Unit invoke(Throwable throwable) {
+                                Log.e("app", "proximity observer error: " + throwable);
+                                return null;
+                            }
+                        })
+                        .withBalancedPowerMode()
+                        .build();
+
+        // create Proximity Zone obj
+        ProximityZone zone = new ProximityZoneBuilder()
+                .forTag("lab")
+                .inCustomRange(50.0)
+                .onEnter(new Function1<ProximityZoneContext, Unit>() {
+                    @Override
+                    public Unit invoke(ProximityZoneContext context) {
+                        String deskOwner = context.getAttachments().get("lab-owner");
+                        Log.d("app", "Welcome to " + deskOwner + "'s lab");
+                        return null;
+                    }
+                })
+                .onExit(new Function1<ProximityZoneContext, Unit>() {
+                    @Override
+                    public Unit invoke(ProximityZoneContext context) {
+                        Log.d("app", "Bye bye, come again!");
+                        return null;
+                    }
+                })
+                .onContextChange(new Function1<Set<? extends ProximityZoneContext>, Unit>() {
+                    @Override
+                    public Unit invoke(Set<? extends ProximityZoneContext> contexts) {
+                        List<String> labOwners = new ArrayList<>();
+                        for (ProximityZoneContext context : contexts) {
+                            labOwners.add(context.getAttachments().get("lab-owner"));
+                        }
+                        Log.d("app", "In range of labs: " + labOwners);
+                        return null;
+                    }
+                })
+                .build();
+
+
+
+        //end bluetooth beacons
 
         //  three buttons
         bt1 = findViewById(R.id.bt1);
@@ -124,6 +191,34 @@ public class MainActivity extends AppCompatActivity {
         /////////////////////////////////for Voice detection test
 
         keepScreenOn();
+
+
+//        Request location permissions
+        RequirementsWizardFactory
+                .createEstimoteRequirementsWizard()
+                .fulfillRequirements(this,
+                        // onRequirementsFulfilled
+                        new Function0<Unit>() {
+                            @Override public Unit invoke() {
+                                Log.d("app", "requirements fulfilled");
+                                proximityObserver.startObserving(zone);
+                                return null;
+                            }
+                        },
+                        // onRequirementsMissing
+                        new Function1<List<? extends Requirement>, Unit>() {
+                            @Override public Unit invoke(List<? extends Requirement> requirements) {
+                                Log.e("app", "requirements missing: " + requirements);
+                                return null;
+                            }
+                        },
+                        // onError
+                        new Function1<Throwable, Unit>() {
+                            @Override public Unit invoke(Throwable throwable) {
+                                Log.e("app", "requirements error: " + throwable);
+                                return null;
+                            }
+                        });
     }
 
     private void sensorInit() {
@@ -151,10 +246,7 @@ public class MainActivity extends AppCompatActivity {
 
         //initiate bluetooth
         if(GlobalVariables.Parameters.START_BLUE) {
-            BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            bluetoothSensor = new BluetoothSensor(bluetoothAdapter, new RunStateMachine());
-            startBluetooth(bluetoothAdapter, bluetoothSensor.mReceiver);
-            bluetoothSensor.enableDisplay(new TextView[]{findViewById(R.id.blueData), findViewById(R.id.textView4)});
+            initBluetooth();
         }
 
         //initiate Microphone
@@ -209,7 +301,7 @@ public class MainActivity extends AppCompatActivity {
                         //  near device discovered
                         stateChangeToRecording();
                     }else{
-                        stateChangeToIdle();
+                        stateChangeToRecording();
                     }
                     break;
                 case RECORDING:
@@ -301,11 +393,13 @@ public class MainActivity extends AppCompatActivity {
         //注册一个搜索结束时的广播
         IntentFilter filter2 = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         registerReceiver(mReceiver, filter2);
-
-        if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-        }
+        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+//
+//        if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
+//            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+//            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+//        }
     }
 
     private void startScanning() {

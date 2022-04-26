@@ -11,12 +11,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.testapp.GlobalVariables;
-import com.example.testapp.LoginActivity;
-import com.google.gson.Gson;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,18 +19,8 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.TreeMap;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
-
 import interfaces.SensorFunction;
 import interfaces.StateMachineRunnable;
-import tools.AndroidResponse;
 import tools.ClassToJson;
 import tools.DataCache;
 import tools.RequestSender;
@@ -61,8 +46,6 @@ public class BluetoothSensor extends AppCompatActivity implements SensorFunction
     private HashSet<String> macFilter = new HashSet<>();
     Data dataCache;
 
-    public BluetoothSensor() {
-    }
 
     public BluetoothSensor(BluetoothAdapter adapter, StateMachineRunnable stateMachine) {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -92,6 +75,7 @@ public class BluetoothSensor extends AppCompatActivity implements SensorFunction
                         try {
                             Thread.sleep(1);
                         } catch (Exception e) {
+
                         }
 
                         periodCnt++;
@@ -169,18 +153,18 @@ public class BluetoothSensor extends AppCompatActivity implements SensorFunction
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 if (macFilter.contains(device.getAddress())) {
                     int rssi = intent.getExtras().getShort(BluetoothDevice.EXTRA_RSSI);//获取额外rssi值
-                    deviceTmpMap.put(device.getAddress(), getDistance(rssi));
+                    String address = device.getAddress();
+                    deviceTmpMap.put(address, getDistance(rssi));
                 }
             }
-//            else if(action.equals(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)){
-//            }
+
         }
     };
 
     private void search() {
         if (enableDisplay)
             tx4.setText("search");
-        bluetoothAdapter.startDiscovery();
+        boolean started = bluetoothAdapter.startDiscovery();
     }
 
     private void updateDis() {
@@ -268,7 +252,6 @@ public class BluetoothSensor extends AppCompatActivity implements SensorFunction
                     }
                 }
             }
-            stateMachine.run();
         }else{// no Near Device
             if(GlobalVariables.Variables.deviceCnt!=0){
                 GlobalVariables.Variables.deviceCnt=0;
@@ -293,6 +276,7 @@ public class BluetoothSensor extends AppCompatActivity implements SensorFunction
         return GlobalVariables.Parameters.blue2DeviceMap.get(bluetoothAddr);
     }
 
+
     public double getDistance(int rssi) {
         int iRssi = Math.abs(rssi);
         double power = (iRssi - 50) / 25.0;
@@ -312,7 +296,7 @@ public class BluetoothSensor extends AppCompatActivity implements SensorFunction
             for (int i=0;i<macTmp.size();i++) {
                 this.addTimeStamp();
             }
-            a.add(GlobalVariables.Parameters.MY_BT_MAC_ID);
+            a.add(convertToDeviceId(GlobalVariables.Parameters.MY_BT_MAC_ID));
             this.addTimeStamp();
         }
 
