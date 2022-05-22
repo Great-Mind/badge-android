@@ -32,7 +32,7 @@ public class GlobalVariables {
 
     public static class Parameters {
         //badge basic info
-        public static final String badgeId = "device-N4-06";
+        public static final String badgeId = "device-N4-05";
         public static String dataSetId = "Nokia4";
 //        public static final String SERVER_URL = "https://6zowfrzywc.execute-api.us-west-2.amazonaws.com/dev/api/";
         // public static final String SERVER_URL="http://192.168.0.4:8080/badge/";
@@ -63,9 +63,9 @@ public class GlobalVariables {
         // N4-04
 //        public static final String MY_BT_MAC_ID="74:8A:28:80:F0:F0";
         // N4-05
-//        public static final String MY_BT_MAC_ID="74:8A:28:80:F1:10";
+        public static final String MY_BT_MAC_ID="74:8A:28:80:F1:10";
         // N4-06
-        public static final String MY_BT_MAC_ID="74:8A:28:80:F2:4E";
+//        public static final String MY_BT_MAC_ID="74:8A:28:80:F2:4E";
         //global settings
         public static final boolean ALLOW_TRANSFER=true;
         public static final boolean START_BLUE=true;
