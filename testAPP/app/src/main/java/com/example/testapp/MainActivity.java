@@ -246,7 +246,10 @@ public class MainActivity extends AppCompatActivity {
 
         //initiate bluetooth
         if(GlobalVariables.Parameters.START_BLUE) {
-            initBluetooth();
+            BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            bluetoothSensor = new BluetoothSensor(bluetoothAdapter, new RunStateMachine());
+            startBluetooth(bluetoothAdapter, bluetoothSensor.mReceiver);
+            bluetoothSensor.enableDisplay(new TextView[]{findViewById(R.id.blueData), findViewById(R.id.textView4)});
         }
 
         //initiate Microphone
@@ -294,8 +297,6 @@ public class MainActivity extends AppCompatActivity {
                     if(GlobalVariables.Variables.reallyNear > 0){
                         // really near device detected
                         GlobalVariables.Variables.reallyNear = 1;
-                        Log.i("====","Badge detected!");
-                        showToast("badge detected!!");
                         stateChangeToRecording();
                     }else if (GlobalVariables.Variables.deviceCnt > 0) {
                         //  near device discovered
@@ -393,13 +394,10 @@ public class MainActivity extends AppCompatActivity {
         //注册一个搜索结束时的广播
         IntentFilter filter2 = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         registerReceiver(mReceiver, filter2);
-        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-        startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-//
-//        if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
-//            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-//            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-//        }
+        if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        }
     }
 
     private void startScanning() {
